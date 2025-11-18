@@ -11,10 +11,10 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "documents")
 @Data
-        public class Document {
-        @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        private Long id;
+public class Document {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
         @Column(nullable = false, unique = true)
         private String numeroPiece;
@@ -64,19 +64,17 @@ import java.time.LocalDateTime;
             updatedAt = LocalDateTime.now();
         }
 
-        public enum TypeDocument {
-            FACTURE_ACHAT,
-            FACTURE_VENTE,
-            TICKET_CAISSE,
-            RELEVE_BANCAIRE
-        }
-
-        public enum StatutDocument {
-            EN_ATTENTE,
-            VALIDE,
-            REJETE
-        }
+    public enum TypeDocument {
+        FACTURE_ACHAT,
+        FACTURE_VENTE,
+        TICKET_CAISSE,
+        RELEVE_BANCAIRE
     }
 
-
+    public enum StatutDocument {
+        EN_ATTENTE,
+        VALIDE,
+        REJETE
+    }
 }
+

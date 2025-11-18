@@ -2,7 +2,6 @@ package com.cabinet.springbootcabinetcomptablemanagement.models;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import org.springframework.cglib.core.Local;
 
 import java.time.LocalDateTime;
 
@@ -24,14 +23,19 @@ public class Societe {
     private String ice;
 
     @Column(nullable = false)
+    private String adresse;
+
+    @Column(nullable = false)
     private String telephone;
 
     @Column(nullable = false)
-    private String email;
+    private String emailContact;
 
     @Column(nullable = false)
     private Boolean actif = true;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
+
+
 }

@@ -9,7 +9,7 @@ import java.util.Optional;
 public interface DocumentRepository extends JpaRepository<Document,Long> {
 
     Optional<Document> findByNumeroPiece(String numeroPiece);
-    
+
     List<Document> findBySocieteIdAndStatus(Long societeId, Document.StatutDocument statutDocument);
 
     List<Document> findBySocieteId(Long societeId);
