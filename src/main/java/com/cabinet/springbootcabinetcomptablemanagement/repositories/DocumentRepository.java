@@ -10,7 +10,7 @@ public interface DocumentRepository extends JpaRepository<Document,Long> {
 
     Optional<Document> findByNumeroPiece(String numeroPiece);
 
-    List<Document> findBySocieteIdAndStatus(Long societeId, Document.StatutDocument statutDocument);
+    List<Document> findBySocieteIdAndStatut(Long societeId, Document.StatutDocument statut);
 
     List<Document> findBySocieteId(Long societeId);
 
