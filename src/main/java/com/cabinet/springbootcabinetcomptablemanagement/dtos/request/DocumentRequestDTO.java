@@ -1,5 +1,6 @@
 package com.cabinet.springbootcabinetcomptablemanagement.dtos.request;
 
+import com.cabinet.springbootcabinetcomptablemanagement.validation.ValidFile;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,7 +35,14 @@ public class DocumentRequestDTO {
     private String fournisseur;
 
     @NotNull(message = "Fichier est obligatoire")
+    @ValidFile(message = "Le fichier doit être un PDF, JPG ou PNG de maximum 10MB")
     private MultipartFile fichier;
 
+    @NotNull(message = "Exercice comptable est obligatoire")
+    @Min(value = 2000, message = "L'exercice comptable doit être supérieur ou égal à 2000")
+    @Max(value = 2100, message = "L'exercice comptable doit être inférieur ou égal à 2100")
+    private Integer exerciceComptable;
 
+    @NotNull(message = "Société est obligatoire")
+    private Long societeId;
 }

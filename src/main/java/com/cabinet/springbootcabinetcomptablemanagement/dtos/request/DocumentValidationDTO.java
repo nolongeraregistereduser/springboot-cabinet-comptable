@@ -15,9 +15,6 @@ public class DocumentValidationDTO {
     @Pattern(regexp = "VALIDE|REJETE", message = "Action doit être VALIDE ou REJETE")
     private String action;
 
-    // Required if action = REJETE
-    @NotBlank(message = "Motif de rejet est obligatoire", groups = RejectionValidation.class)
+    // Required if action = REJETE, Optional for VALIDE
     private String commentaire;
-
-    public interface RejectionValidation {}
 }

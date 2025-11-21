@@ -3,7 +3,6 @@ package com.cabinet.springbootcabinetcomptablemanagement.dtos.request;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
@@ -13,7 +12,7 @@ public class SocieteRequestDTO {
     private String raisonSociale;
 
     @NotBlank(message = "ICE est obligatoire")
-    @Size(min = 15, max = 15, message = "ICE doit contenir exactement 15 caractères")
+    @Pattern(regexp = "^[0-9]{15}$", message = "ICE doit contenir exactement 15 chiffres")
     private String ice;
 
     @NotBlank(message = "Adresse est obligatoire")
