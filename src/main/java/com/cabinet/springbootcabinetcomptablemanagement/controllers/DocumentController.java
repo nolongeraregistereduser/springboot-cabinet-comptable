@@ -39,6 +39,7 @@ public class DocumentController {
 
     /**
      * Get current authenticated user from SecurityContext
+     * Uses JOIN FETCH to eagerly load société and avoid LazyInitializationException
      */
     private User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -47,8 +48,10 @@ public class DocumentController {
         }
 
         String email = authentication.getName();
-        return utilisateurRepository.findByEmail(email)
+        User user = utilisateurRepository.findByEmail(email)
                 .orElseThrow(() -> ResourceNotFoundException.ofField("Utilisateur", "email", email));
+        
+        return user;
     }
 
     /**
@@ -198,6 +201,7 @@ public class DocumentController {
 
         return ResponseEntity.ok(responseDTOs);
     }
+
 
     /**
      * Get a single document by ID

@@ -220,6 +220,33 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
+    // ========== HIBERNATE EXCEPTIONS ==========
+
+    /**
+     * Handle Hibernate LazyInitializationException
+     * Returns HTTP 500 INTERNAL SERVER ERROR
+     *
+     * This occurs when trying to access a lazy-loaded relationship outside of a transaction
+     */
+    @ExceptionHandler(org.hibernate.LazyInitializationException.class)
+    public ResponseEntity<ApiErrorResponseDTO> handleLazyInitializationException(
+            org.hibernate.LazyInitializationException ex,
+            WebRequest request) {
+
+        System.err.println("❌ LazyInitializationException: " + ex.getMessage());
+        ex.printStackTrace();
+
+        ApiErrorResponseDTO error = ApiErrorResponseDTO.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .error(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase())
+                .message("Erreur de chargement des données. Veuillez réessayer. Détails: " + ex.getMessage())
+                .path(extractPath(request))
+                .build();
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+    }
+
     // ========== GENERIC EXCEPTION ==========
 
     /**
@@ -235,15 +262,22 @@ public class GlobalExceptionHandler {
             WebRequest request) {
 
         // Log the exception for debugging (in production, use proper logging)
-        System.err.println(" Unexpected error: " + ex.getClass().getSimpleName());
+        System.err.println("❌ Unexpected error: " + ex.getClass().getSimpleName());
         System.err.println("   Message: " + ex.getMessage());
+        System.err.println("   Cause: " + (ex.getCause() != null ? ex.getCause().getClass().getSimpleName() + ": " + ex.getCause().getMessage() : "null"));
         ex.printStackTrace();
+
+        // Include exception details in response for debugging (remove in production)
+        String errorMessage = "Une erreur inattendue s'est produite. Veuillez contacter l'administrateur.";
+        if (ex.getMessage() != null && !ex.getMessage().isEmpty()) {
+            errorMessage += " Détails: " + ex.getClass().getSimpleName() + " - " + ex.getMessage();
+        }
 
         ApiErrorResponseDTO error = ApiErrorResponseDTO.builder()
                 .timestamp(LocalDateTime.now())
                 .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .error(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase())
-                .message("Une erreur inattendue s'est produite. Veuillez contacter l'administrateur.")
+                .message(errorMessage)
                 .path(extractPath(request))
                 .build();
 

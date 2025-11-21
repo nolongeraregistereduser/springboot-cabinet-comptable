@@ -132,12 +132,14 @@ public class DocumentServiceImpl implements DocumentService {
 
     @Override
     public Optional<Document> getDocumentById(Long id) {
-        return documentRepository.findById(id);
+        // Use custom query to eagerly fetch société to avoid LazyInitializationException
+        return documentRepository.findByIdWithSociete(id);
     }
 
     @Override
     public List<Document> getAllDocuments() {
-        return documentRepository.findAll();
+        // Use custom query to eagerly fetch société to avoid LazyInitializationException
+        return documentRepository.findAllWithSociete();
     }
 
     @Override
