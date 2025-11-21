@@ -54,6 +54,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 // Step 4: Load user details from database
                 UserDetails userDetails = userDetailsService.loadUserByUsername(email);
 
+                // Debug: Log authorities
+                System.out.println("DEBUG: User authorities: " + userDetails.getAuthorities());
+                System.out.println("DEBUG: User enabled: " + userDetails.isEnabled());
+
                 // Step 5: Create authentication object
                 UsernamePasswordAuthenticationToken authentication =
                     new UsernamePasswordAuthenticationToken(
@@ -67,6 +71,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 // Step 7: Set authentication in SecurityContext
                 SecurityContextHolder.getContext().setAuthentication(authentication);
+                
+                System.out.println("DEBUG: Authentication set in SecurityContext");
             }
         } catch (Exception ex) {
             System.err.println("Could not set user authentication in security context: " + ex.getMessage());

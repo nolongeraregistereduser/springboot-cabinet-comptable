@@ -21,7 +21,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
  */
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity // Enables @PreAuthorize and @Secured annotations
+@EnableMethodSecurity(prePostEnabled = true) // Enables @PreAuthorize and @Secured annotations
 @RequiredArgsConstructor
 public class SecurityConfig {
 

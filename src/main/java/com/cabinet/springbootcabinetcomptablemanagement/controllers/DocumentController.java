@@ -61,7 +61,7 @@ public class DocumentController {
      * POST /api/documents
      */
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PreAuthorize("hasRole('SOCIETE')")
+    @PreAuthorize("hasAuthority('ROLE_SOCIETE')")
     public ResponseEntity<DocumentResponseDTO> uploadDocument(
             @Valid @ModelAttribute DocumentRequestDTO requestDTO) {
         
@@ -112,7 +112,7 @@ public class DocumentController {
      * GET /api/documents
      */
     @GetMapping
-    @PreAuthorize("hasAnyRole('SOCIETE', 'COMPTABLE')")
+    @PreAuthorize("hasAnyAuthority('ROLE_SOCIETE', 'ROLE_COMPTABLE')")
     public ResponseEntity<List<DocumentResponseDTO>> getAllDocuments(
             @RequestParam(required = false) String exerciceComptable) {
         
@@ -155,7 +155,7 @@ public class DocumentController {
      * GET /api/documents/exercice/{exercice}
      */
     @GetMapping("/exercice/{exercice}")
-    @PreAuthorize("hasAnyRole('SOCIETE', 'COMPTABLE')")
+    @PreAuthorize("hasAnyAuthority('ROLE_SOCIETE', 'ROLE_COMPTABLE')")
     public ResponseEntity<List<DocumentResponseDTO>> getDocumentsByExercice(
             @PathVariable String exercice) {
         
@@ -188,7 +188,7 @@ public class DocumentController {
      * GET /api/documents/societe/{societeId}
      */
     @GetMapping("/societe/{societeId}")
-    @PreAuthorize("hasRole('COMPTABLE')")
+    @PreAuthorize("hasAuthority('ROLE_COMPTABLE')")
     public ResponseEntity<List<DocumentResponseDTO>> getDocumentsBySociete(
             @PathVariable Long societeId) {
         
@@ -211,7 +211,7 @@ public class DocumentController {
      * GET /api/documents/{id}
      */
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('SOCIETE', 'COMPTABLE')")
+    @PreAuthorize("hasAnyAuthority('ROLE_SOCIETE', 'ROLE_COMPTABLE')")
     public ResponseEntity<DocumentResponseDTO> getDocumentById(@PathVariable Long id) {
         
         log.info("Récupération du document ID: {}", id);
@@ -243,7 +243,7 @@ public class DocumentController {
      * GET /api/documents/{id}/download
      */
     @GetMapping("/{id}/download")
-    @PreAuthorize("hasAnyRole('SOCIETE', 'COMPTABLE')")
+    @PreAuthorize("hasAnyAuthority('ROLE_SOCIETE', 'ROLE_COMPTABLE')")
     public ResponseEntity<byte[]> downloadDocument(@PathVariable Long id) {
         
         log.info("Téléchargement du document ID: {}", id);
@@ -285,7 +285,7 @@ public class DocumentController {
      * DELETE /api/documents/{id}
      */
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyRole('SOCIETE', 'COMPTABLE')")
+    @PreAuthorize("hasAnyAuthority('ROLE_SOCIETE', 'ROLE_COMPTABLE')")
     public ResponseEntity<Void> deleteDocument(@PathVariable Long id) {
         
         log.info("Suppression du document ID: {}", id);

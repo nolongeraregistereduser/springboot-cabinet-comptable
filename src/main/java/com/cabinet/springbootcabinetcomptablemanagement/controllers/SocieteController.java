@@ -55,7 +55,7 @@ public class SocieteController {
 
 
     @GetMapping("/documents")
-    @PreAuthorize("hasRole('SOCIETE')")
+    @PreAuthorize("hasAuthority('ROLE_SOCIETE')")
     @Transactional
     public ResponseEntity<List<DocumentResponseDTO>> getMySocieteDocuments(
             @RequestParam(required = false) String exerciceComptable) {

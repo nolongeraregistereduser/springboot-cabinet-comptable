@@ -24,6 +24,8 @@ public interface DocumentService {
 
     List<Document> getDocumentBySocieteAndExercice(Long societeId, String exerciseComputable);
 
+    List<Document> getDocumentByStatut(Document.StatutDocument statut);
+
     Document validateDocument(Long id, String commentaireComptable);
 
     Document rejectDocument(Long id, String commentaireComptable);

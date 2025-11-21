@@ -162,6 +162,12 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
+    public List<Document> getDocumentByStatut(Document.StatutDocument statut) {
+        log.info("Récupération des documents avec le statut: {}", statut);
+        return documentRepository.findByStatut(statut);
+    }
+
+    @Override
     public Document validateDocument(Long id, String commentaire) {
         log.info("Validation du document ID: {}", id);
 
