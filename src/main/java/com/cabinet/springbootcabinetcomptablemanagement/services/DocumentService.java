@@ -8,6 +8,10 @@ import java.util.Optional;
 
 public interface DocumentService {
 
+    Document createDocument(String numeroPiece, Document.TypeDocument type, String categorieComptable,
+                           java.time.LocalDate datePiece, java.math.BigDecimal montant, String fournisseur,
+                           MultipartFile file, Long societeId, String exerciceComptable);
+
     Document updateDocument(Document document, MultipartFile file);
 
     Optional<Document> getDocumentById(Long id);

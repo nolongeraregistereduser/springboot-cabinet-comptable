@@ -1,7 +1,11 @@
 package com.cabinet.springbootcabinetcomptablemanagement.services.Impl;
 
+import com.cabinet.springbootcabinetcomptablemanagement.exceptions.DuplicateResourceException;
+import com.cabinet.springbootcabinetcomptablemanagement.exceptions.ResourceNotFoundException;
 import com.cabinet.springbootcabinetcomptablemanagement.models.Document;
+import com.cabinet.springbootcabinetcomptablemanagement.models.Societe;
 import com.cabinet.springbootcabinetcomptablemanagement.repositories.DocumentRepository;
+import com.cabinet.springbootcabinetcomptablemanagement.repositories.SocieteRepository;
 import com.cabinet.springbootcabinetcomptablemanagement.services.DocumentService;
 import com.cabinet.springbootcabinetcomptablemanagement.services.FileStorageService;
 import jakarta.transaction.Transactional;
@@ -10,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -23,6 +28,71 @@ public class DocumentServiceImpl implements DocumentService {
 
     private final DocumentRepository documentRepository;
     private final FileStorageService fileStorageService;
+    private final SocieteRepository societeRepository;
+
+    @Override
+    public Document createDocument(String numeroPiece, Document.TypeDocument type, String categorieComptable,
+                                   LocalDate datePiece, BigDecimal montant, String fournisseur,
+                                   MultipartFile file, Long societeId, String exerciceComptable) {
+        log.info("Création d'un nouveau document: numéro={}, société={}", numeroPiece, societeId);
+
+        // Vérifier que le numéro de pièce n'existe pas déjà
+        if (documentRepository.existsByNumeroPiece(numeroPiece)) {
+            throw new DuplicateResourceException("Un document avec le numéro de pièce '" + numeroPiece + "' existe déjà");
+        }
+
+        // Vérifier que la société existe
+        Societe societe = societeRepository.findById(societeId)
+                .orElseThrow(() -> ResourceNotFoundException.of("Société", societeId));
+
+        // Valider le fichier
+        if (file == null || file.isEmpty()) {
+            throw new IllegalArgumentException("Le fichier est requis");
+        }
+
+        // Validation de la taille du fichier (10MB max)
+        if (file.getSize() > 10 * 1024 * 1024) {
+            throw new IllegalArgumentException("La taille du fichier ne doit pas dépasser 10MB");
+        }
+
+        // Validation du type de fichier
+        String contentType = file.getContentType();
+        if (contentType == null ||
+                !(contentType.equals("application/pdf") ||
+                        contentType.startsWith("image/"))) {
+            throw new IllegalArgumentException("Seuls les fichiers PDF, JPG et PNG sont acceptés");
+        }
+
+        try {
+            // Stocker le fichier
+            String storedFileName = fileStorageService.storeFile(file);
+
+            // Créer le document
+            Document document = new Document();
+            document.setNumeroPiece(numeroPiece);
+            document.setType(type);
+            document.setCategorieComptable(categorieComptable);
+            document.setDatePiece(datePiece);
+            document.setMontant(montant);
+            document.setFournisseur(fournisseur);
+            document.setCheminFichier(storedFileName);
+            document.setNomFichierOriginal(file.getOriginalFilename());
+            document.setStatut(Document.StatutDocument.EN_ATTENTE);
+            document.setSociete(societe);
+            document.setExerciceComptable(exerciceComptable);
+            document.setCreatedAt(LocalDateTime.now());
+
+            Document savedDocument = documentRepository.save(document);
+            log.info("Document créé avec succès: ID={}, numéro={}", savedDocument.getId(), numeroPiece);
+
+            return savedDocument;
+
+        } catch (Exception e) {
+            log.error("Erreur lors de la création du document", e);
+            throw new RuntimeException("Erreur lors de la création du document: " + e.getMessage(), e);
+        }
+    }
+
     @Override
     public Document updateDocument(Document document, MultipartFile file) {
         log.info("Mise à jour du document ID: {}", document.getId());
