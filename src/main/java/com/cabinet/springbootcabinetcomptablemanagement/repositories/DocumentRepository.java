@@ -17,4 +17,6 @@ public interface DocumentRepository extends JpaRepository<Document,Long> {
     List<Document> findByStatut(Document.StatutDocument statut);
 
     boolean existsByNumeroPiece(String numeroPiece);
+
+    List<Document> findByExerciceComptable(String exerciceComptable);
 }

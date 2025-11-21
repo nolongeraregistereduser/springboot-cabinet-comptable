@@ -50,12 +50,15 @@ public class Document {
         @Column(length = 1000)
         private String commentaireComptable;
 
-        @ManyToOne(fetch = FetchType.LAZY)
-        @JoinColumn(name = "societe_id", nullable = false)
-        private Societe societe;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "societe_id", nullable = false)
+    private Societe societe;
 
-        @Column(nullable = false, updatable = false)
-        private LocalDateTime createdAt = LocalDateTime.now();
+    @Column(nullable = false)
+    private String exerciceComptable; // Format: "2024" or "2024-2025"
+
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt = LocalDateTime.now();
 
         private LocalDateTime updatedAt;
 
@@ -63,6 +66,14 @@ public class Document {
         protected void onUpdate() {
             updatedAt = LocalDateTime.now();
         }
+
+    public void setCommentaire(String commentaire) {
+        this.commentaireComptable = commentaire;
+    }
+
+    public void setDateModification(LocalDateTime now) {
+        this.updatedAt = now;
+    }
 
     public enum TypeDocument {
         FACTURE_ACHAT,
